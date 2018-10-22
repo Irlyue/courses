@@ -13,7 +13,7 @@ function [x, step] = conjugate_gradient(x0, A, b, epsilon)
 % step   : scalar, number of steps to reach x.
 
 if nargin == 3
-    epsilon = 1e-7;
+    epsilon = 1e-10;
 end
 
 x = x0;
@@ -24,7 +24,7 @@ step = 0;
 while true
     step = step + 1;
     [x, r1, r0, p] = move_one_step(x, A, b, r1, r0, p, step==1);
-    if r1' * r1 < epsilon
+    if sqrt(r1' * r1) < epsilon
         break
     end
 end
