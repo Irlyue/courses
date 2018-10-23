@@ -29,7 +29,7 @@ for k = 1:n_steps
 		t_his = t_his(1:k-1);
 		break
 	end
-	t = armijoRule(x, dx, f);
+	t = armijoRule(x, dx, -dx, f);
 	x = x - t * dx;
 	his(k) = f(x);
 	t_his(k) = t;
