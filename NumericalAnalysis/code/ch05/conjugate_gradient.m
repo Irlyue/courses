@@ -1,9 +1,9 @@
-function [x, step] = conjugate_gradient(x0, A, b, epsilon)
+function [x, step] = conjugate_gradient(x, A, b, epsilon)
 % Use conjugate gradient method to solve linear system Ax = b.
 %
 % Arguments
 % ---------
-% x0      : initial value
+% x       : initial value
 % A, b    : Ax = b
 % epsilon : scalar, a float number very close to 0, say 1e-7
 %
@@ -16,29 +16,22 @@ if nargin == 3
     epsilon = 1e-10;
 end
 
-x = x0;
-r0 = 0;
-r1 = 0;
-p = 0;
+n = length(A);
 step = 0;
-while true
-    step = step + 1;
-    [x, r1, r0, p] = move_one_step(x, A, b, r1, r0, p, step==1);
-    if sqrt(r1' * r1) < epsilon
-        break
+r = b - A*x;
+rou_new = r'*r;
+while step < n && sqrt(rou_new) > epsilon
+    if step == 0
+        p = r;
+    else
+        beta = rou_new / rou_old;
+        p = r + beta * p;
     end
+    Ap = A*p;
+    alpha = (r'*p) / (p'*Ap);
+    x = x + alpha * p;
+    r = r - alpha * Ap;
+    rou_old = rou_new;
+    rou_new = r'*r;
+    step = step + 1;
 end
-
-
-function [xnext, rnext, r, p] = move_one_step(x, A, b, r, rprev, pprev, first)
-if first
-    r = b - A*x;
-    p = r;
-else
-    beta = (r' * r) / (rprev' * rprev);
-    p = r + beta.*pprev;
-end
-t = A * p;
-alpha = (r' * p) / (p' * t);
-xnext = x + alpha.*p;
-rnext = r - alpha.*t;
