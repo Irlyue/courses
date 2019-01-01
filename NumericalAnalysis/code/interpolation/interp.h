@@ -1,19 +1,38 @@
 #ifndef INTERP_H
 #include<vector>
 
-double polyF(const std::vector<double>&, double);
-double polyDf(const std::vector<double>&, unsigned long);
+using DVector = std::vector<double>;
 
+double polyF(const DVector &, double);
+double polyDf(const DVector &, unsigned long);
 
-class LagrangeInterpolation{
-private:
-	std::vector<double> xs;
-	std::vector<double> ys;
-	std::vector<double> wxs;
-	void preCompute();
+class Interpolation{
+protected:
+    DVector xs;
+    DVector ys;
 public:
-	LagrangeInterpolation(const std::vector<double>&, const std::vector<double>&);
-	double compute(double);
+	virtual double compute(double) = 0;
+	virtual void preCompute() = 0;
+	Interpolation(const DVector & txs, const DVector &tys): xs(txs), ys(tys){}
+};
+
+class LagrangeInterpolation: public Interpolation{
+private:
+	DVector wxs;
+	void preCompute() override;
+public:
+	LagrangeInterpolation(const DVector &, const DVector &);
+	double compute(double) override;
+};
+
+
+class NewtonInterpolation: public Interpolation{
+private:
+	std::vector<DVector> dq;
+	void preCompute() override;
+public:
+	NewtonInterpolation(const DVector &, const DVector &);
+	double compute(double) override;
 };
 
 #endif

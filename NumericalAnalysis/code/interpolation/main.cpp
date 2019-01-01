@@ -26,17 +26,19 @@ void testExp(unsigned long n){
 	srand(0);
 	std::vector<double> xs(N), ys(N);
 	generateExp(xs, ys, N);
-	LagrangeInterpolation lag(xs, ys);
+	Interpolation *tp = new NewtonInterpolation(xs, ys);
 	for(unsigned long i = 0; i < n; i++){
 		double x = (double)rand() / RAND_MAX;
 		std::cout << "x = " << x << std::endl;
 		std::cout << "GT  : " << exp(x) << std::endl;
-		std::cout << "Pred: " << lag.compute(x) << std::endl;
+		std::cout << "Pred: " << tp->compute(x) << std::endl;
 	}
 	std::cout << "Done!" << std::endl;
 }
 
 int main(){
-	testExp(8);
+//	testExp(8);
+    NewtonInterpolation nip({0.4, 0.5, 0.6}, {-0.916291, -0.693147, -0.510826});
+    std::cout << nip.compute(0.54) << std::endl;
 	return 0;
 }
