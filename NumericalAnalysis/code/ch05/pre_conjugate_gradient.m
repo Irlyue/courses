@@ -37,35 +37,3 @@ while step < n && sqrt(r'*r) > epsilon
 	r = r - alpha * w;
 	step = step + 1;
 end
-
-
-%x = x0;
-%r = 0;
-%z = 0;
-%p = 0;
-%rou = 0;
-%k = 0;
-%while true
-	%k = k + 1;
-	%[x, r, z, p, rou] = move_one_step(x, A, b, M, r, z, p, rou, k == 1);
-	%if sqrt(r' * r) < epsilon
-		%break
-	%end
-%end
-
-
-%function [xnext, rnext, znext, pnext, rounext] = move_one_step(x, A, b, M, r, z, p, rou, first)
-%if first
-	%r = b - A*x;
-	%z = M \ r;
-	%rou = r'*z;
-	%p = z;
-%end
-%w = A * p;
-%alpha = rou / (p'*w);
-%xnext = x + alpha * p;
-%rnext = r - alpha * w;
-%znext = M \ rnext;
-%rounext = rnext' * znext;
-%beta = rounext / rou;
-%pnext = znext + beta * p;
