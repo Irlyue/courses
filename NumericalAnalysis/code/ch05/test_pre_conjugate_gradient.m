@@ -1,6 +1,6 @@
 clear;
 epsilon = 1e-9;
-n = 5;
+n = 1000;
 A = zeros(n, n);
 %b = randn(n, 1);
 b = ones(n, 1);
@@ -14,7 +14,11 @@ for k = 1:n
 	end
 end
 big = diag((randi([0, 2], n, 1) - 1) * 100);
-%A = A + big;
+A = A + big;
+
+% x0 = zeros(5, 1);
+% A = [[100 3 0 0 0]; [3 200 3 0 0]; [0 3 300 3 0]; [0 0 3 200 3]; [0 0 0 3 150]];
+% b = [1 1 1 1 1]';
 
 xt = A \ b;
 [xgd, tgd] = conjugate_gradient(x0, A, b, epsilon);
