@@ -33,6 +33,13 @@ M = np.array([
 ])
 
 
+def get_quantization_matrix(Q, qf=100):
+    assert (1 <= qf <= 100), 'Please provide the quality factor as an integer between 1 and 100'
+    sf = (100 - qf) / 50 if qf <= 50 else 50 / qf
+    Qx = np.round(Q * sf) if sf != 0 else Q
+    return Qx
+
+
 def read_image(path):
     return np.array(Image.open(path))
 
@@ -60,11 +67,12 @@ def to_blocks(x, h=8, w=8):
             yield i*h, j*w, block
 
 
-def jpeg_compress(rgb):
+def jpeg_compress(rgb, qf=100):
     # 1. Transform to YUV color space
     yuv = rgb2yuv(rgb) - 128.
     out = np.zeros_like(yuv)
     Qs = np.stack((Qy, Qc, Qc), axis=2)
+    Qs = get_quantization_matrix(Qs, qf)
     for i, j, block in to_blocks(yuv):
         Gs = jpeg_compress_block(block)
         Bs = np.round(Gs / Qs)
@@ -76,9 +84,10 @@ def jpeg_compress_block(x):
     return dct(dct(x, axis=0, norm='ortho'), axis=1, norm='ortho')
 
 
-def jpeg_decompress(x):
+def jpeg_decompress(x, qf=100):
     yuv = np.zeros_like(x)
     Qs = np.stack((Qy, Qc, Qc), axis=2)
+    Qs = get_quantization_matrix(Qs, qf)
     for i, j, block in to_blocks(x):
         Bs = block * Qs
         Gs = np.round(jpeg_decompress_block(Bs))
