@@ -17,13 +17,13 @@ void testMethod(func_type func, const vector<DComplex> &ys, string desc){
 }
 
 double diff(const vector<DComplex> &a, const vector<DComplex> &b){
-	double ans = -double(1 << 26);
+	double ans = -1.0;
 	for(unsigned long i = 0; i < a.size(); i++){
 		auto d = a[i] - b[i];
 		double l = sqrt(d.real()*d.real() + d.imag()*d.imag());
 		ans = ans > l ? ans : l;
 	}
-	return 0;
+	return ans;
 }
 
 int main(){
